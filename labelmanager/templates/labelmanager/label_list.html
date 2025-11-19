@@ -1,0 +1,74 @@
+<head>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    
+</head>
+<h2>Valid Label Pairs</h2>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <div style="margin-bottom:10px;">
+        <select name="action" required>
+            <option value="">Bulk Action</option>
+            <option value="mark_valid">Mark as Valid</option>
+            <option value="mark_not_checked">Mark as Not Checked</option>
+            <option value="remove">Remove Selected</option>
+        </select>
+
+        <input type="text"
+               name="bulk_reason"
+               placeholder="Removal reason (for bulk remove)"
+               style="width:220px;">
+
+        <button type="submit">Apply</button>
+    </div>
+
+    <table border="1" cellpadding="6">
+        <tr>
+            <th><input type="checkbox" onclick="toggleAll(this)"></th>
+            <th>Image</th>
+            <th>Label</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for item in page_obj %}
+        <tr>
+            <td>
+                <input type="checkbox" name="selected" value="{{ item.id }}">
+            </td>
+            <td><img src="{{ MEDIA_URL }}{{ item.image_path }}" width="80"></td>
+            <td>{{ item.label }}</td>
+            <td>{{ item.label_status }}</td>
+            <td>
+                <a href="{% url 'edit_label' item.id %}">Edit</a> |
+                <a href="{% url 'remove_label' item.id %}">Remove</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>
+
+
+<!-- Pagination -->
+<div style="margin-top:15px;">
+    {% if page_obj.has_previous %}
+        <a href="?page={{ page_obj.previous_page_number }}">Prev</a>
+    {% endif %}
+
+    <span style="padding:0 10px;">
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </span>
+
+    {% if page_obj.has_next %}
+        <a href="?page={{ page_obj.next_page_number }}">Next</a>
+    {% endif %}
+</div>
+
+
+<script>
+function toggleAll(source) {
+    let checkboxes = document.querySelectorAll("input[type='checkbox'][name='selected']");
+    checkboxes.forEach(cb => cb.checked = source.checked);
+}
+</script>
