@@ -1,4 +1,4 @@
-# Nepali Word Labelling Server
+# Labelling App For OCR
 
 A Django-based web application for **labelling Nepali words from images**. The system provided an interface for reviewing and managing existing labels, with authentication and administrative functionality.
 
